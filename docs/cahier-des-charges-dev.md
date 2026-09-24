@@ -6,8 +6,8 @@ Pilier: DeepTech, cas CyberSpace et OfflineSpace
 Vaisseau: Yggdrasil  
 Pharmacie couplee: [EIR / medichat](https://github.com/angoularaphael/medichat)
 
-Version: cadrage developpeur du 23 septembre 2026.  
-Le depot contient le contrat et le plan. Le laboratoire pfSense / Suricata n'est pas encore un prototype executable ici.
+Version: prototype console du 24 septembre 2026.  
+Le depot contient le contrat, le plan, et la console MQTT `services/mimir-bus`. Le laboratoire pfSense / Suricata reste un exercice de salle, pas un binaire dans ce depot.
 
 ## 1. Role
 
@@ -51,7 +51,7 @@ Cote EIR, c'est deja branche dans `backend/app/services/mqtt_service.py`:
 - publication crise et stock bas
 - file `offline_outbox.jsonl` si le broker ne repond pas
 
-Cote MIMIR, il reste a ecrire le client qui ecoute les deux topics EIR et qui publie l'alerte infirmerie.
+Cote MIMIR, la console `services/mimir-bus` ecoute ces deux topics et publie l'alerte infirmerie. Elle ne contient pas Suricata: le bouton publie un marqueur de demonstration, pas une detection reelle.
 
 ## 4. Reseau de laboratoire a livrer
 
@@ -104,20 +104,25 @@ La reponse clinique (serre, cuve, protocole) est entierement dans EIR. Voir `doc
 
 ## 6. Ordre de realisation
 
-1. Ping et MQTT entre Windows et Kali sans Internet.
-2. S'abonner aux topics EIR et afficher un stock bas.
-3. Publier une alerte infirmerie et la relire dans EIR (`GET /api/security/alerts`).
-4. Couper le WAN et refaire un echange local.
-5. Montrer la file d'attente si Mosquitto est arrete.
-6. Preparer trois captures et un oral de 60 secondes.
+Deja dans le depot:
 
-## 7. Arborescence visee
+1. Console qui s'abonne aux topics EIR et affiche un stock bas ou une crise.
+2. Publication d'une alerte infirmerie, relue dans EIR (`GET /api/security/alerts` ou le journal admin).
+3. File d'attente si Mosquitto est arrete, rejouee au retour.
+
+Encore en salle, pas dans le code:
+
+4. Ping et MQTT entre Windows et Kali sans Internet, avec pfSense.
+5. Couper le WAN et refaire un echange local.
+6. Trois captures et un oral de 60 secondes.
+
+## 7. Arborescence
 
 ```
 docs/cahier-des-charges-dev.md
 docs/contrat-mqtt-eir.md
-infra/                 configuration labo exportable, sans secret
-services/mimir-bus/    client MQTT: ecoute EIR, publie l'alerte
+services/mimir-bus/    console MQTT: ecoute EIR, publie l'alerte, file locale
+infra/                 reserve au labo, sans secret et sans XML de mot de passe
 ```
 
 Ne pas versionner de mot de passe, de `.env`, ni de capture contenant autre chose que le trafic de demonstration.

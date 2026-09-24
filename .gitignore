@@ -7,3 +7,5 @@ infra/**/*.xml
 __pycache__/
 .venv/
 node_modules/
+data/
+services/mimir-bus/.venv/
