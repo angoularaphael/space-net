@@ -71,7 +71,7 @@ def make_handler(console: Console):
     return Handler
 
 
-def serve(bus: MimirBus, port: int) -> None:
+def serve(bus: MimirBus, port: int, host: str = "127.0.0.1") -> None:
     handler = make_handler(Console(bus))
-    server = ThreadingHTTPServer(("127.0.0.1", port), handler)
+    server = ThreadingHTTPServer((host, port), handler)
     server.serve_forever()
